@@ -1,10 +1,11 @@
 #!/bin/bash
-#SBATCH --account SUPPORT-CPU
+#SBATCH --account ACCOUNT-NAME
 #SBATCH --partition icelake
 #SBATCH --time 12:00:00
 
 # This will give us `nodes` tasks, with (in this case) 76 CPUs per task, i.e.
-# the whole node on each task.
+# the whole node on each task.  The queue system assigns memory based on
+# how many CPUs we request.  We could also just request memory explicitly.
 # TODO: use --exclusive to get whole node, avoids knowing number of CPUS?  But
 # what if we want to share nodes?  (We probably don't.)
 #SBATCH --cpus-per-task=76 --nodes=7
@@ -13,11 +14,11 @@
 # below.
 #SBATCH --distribution=cyclic
 
+set -eou pipefail
 echo -n "Started at: "
 date
 
-set -eou pipefail
-
+# Change to the working directory and load the Python venv
 cd ~/hpc-work/BioDAC/full-run-correct
 source /rds-d7/user/sjc306/hpc-work/BioDAC/venv/bin/activate
 
@@ -30,8 +31,7 @@ source /rds-d7/user/sjc306/hpc-work/BioDAC/venv/bin/activate
 # We disable CPU binding, because the auto-binding will assume two tasks on a
 # node should share the CPUs, which means our scheduler and client tasks hog
 # half the CPUs on the first two nodes.
-#srun --cpu-bind=verbose,none --overcommit --ntasks=$((SLURM_JOB_NUM_NODES+2)) ./dask-slurmrunner-time.py &
-srun --cpu-bind=verbose,none --overcommit --ntasks=9 ./dask-new-overlap.py &
+srun --cpu-bind=verbose,none --overcommit --ntasks=$((SLURM_JOB_NUM_NODES+2)) ./dask-new-overlap.py &
 
 wait
 
