@@ -17,7 +17,7 @@ pip install 'dask_jobqueue'
 
 ## Files included
 
-### Jupyter notebook
+### Jupyter notebooks
 The `explain-workflow.ipnb` notebook runs through the workflow
 used to denoise the mouse embryo image on CSD3.  It has
 been slightly modified so that it will run on a local machine
@@ -27,6 +27,11 @@ on your local machine.  The code expects a CZI file for input, and
 will produce a Zarr file for output.  It is set to run one worker
 with one thread, using up to 16GiB of memory.  You can also adjust
 this.
+
+The `explain-dask.ipynb` notebook gives a painfully brief primer
+on Dask.
+Dask's own [documentation](https://docs.dask.org/en/stable/)
+is pretty good.
 
 ### Python script
 The `dask-new-overlap.sh` file contains the script that was run to
